@@ -23,9 +23,7 @@ namespace TrilhaApiDesafio.Controllers
             {
                 return NotFound("Não foi encontrada tarefa com este id.");
             }
-            // TODO: Buscar o Id no banco utilizando o EF
-            // TODO: Validar o tipo de retorno. Se não encontrar a tarefa, retornar NotFound,
-            // caso contrário retornar OK com a tarefa encontrada
+
             return Ok(task);
         }
 
@@ -33,7 +31,13 @@ namespace TrilhaApiDesafio.Controllers
         public IActionResult ObterTodos()
         {
             // TODO: Buscar todas as tarefas no banco utilizando o EF
-            return Ok();
+            var tasks = _context.Tarefas.ToList();
+            if (!tasks.Any())
+            {
+                return NotFound("Não há tarefas cadastradas.");
+            }
+
+            return Ok(tasks);
         }
 
         [HttpGet("ObterPorTitulo")]
@@ -41,13 +45,25 @@ namespace TrilhaApiDesafio.Controllers
         {
             // TODO: Buscar  as tarefas no banco utilizando o EF, que contenha o titulo recebido por parâmetro
             // Dica: Usar como exemplo o endpoint ObterPorData
-            return Ok();
+            var tituloMinusculo = titulo.ToLower();
+            var tasks = _context.Tarefas.Where(task => task.Titulo.ToLower().Contains(tituloMinusculo));
+            if (!tasks.Any())
+            {
+                return NotFound("Não há tarefas cadastradas com esse título.");
+            }
+
+            return Ok(tasks);
         }
 
         [HttpGet("ObterPorData")]
         public IActionResult ObterPorData(DateTime data)
         {
             var tarefa = _context.Tarefas.Where(x => x.Data.Date == data.Date);
+            if (!tarefa.Any())
+            {
+                return NotFound("Não há tarefa registrada com essa data.");
+            }
+
             return Ok(tarefa);
         }
 

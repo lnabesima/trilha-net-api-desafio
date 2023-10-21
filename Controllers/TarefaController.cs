@@ -15,13 +15,18 @@ namespace TrilhaApiDesafio.Controllers
             _context = context;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public IActionResult ObterPorId(int id)
         {
+            var task = _context.Tarefas.Find(id);
+            if (task == null)
+            {
+                return NotFound("Não foi encontrada tarefa com este id.");
+            }
             // TODO: Buscar o Id no banco utilizando o EF
             // TODO: Validar o tipo de retorno. Se não encontrar a tarefa, retornar NotFound,
             // caso contrário retornar OK com a tarefa encontrada
-            return Ok();
+            return Ok(task);
         }
 
         [HttpGet("ObterTodos")]
@@ -60,6 +65,9 @@ namespace TrilhaApiDesafio.Controllers
         {
             if (tarefa.Data == DateTime.MinValue)
                 return BadRequest(new { Erro = "A data da tarefa não pode ser vazia" });
+
+            _context.Add(tarefa);
+            _context.SaveChanges();
 
             // TODO: Adicionar a tarefa recebida no EF e salvar as mudanças (save changes)
             return CreatedAtAction(nameof(ObterPorId), new { id = tarefa.Id }, tarefa);

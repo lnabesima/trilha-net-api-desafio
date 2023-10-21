@@ -18,41 +18,39 @@ namespace TrilhaApiDesafio.Controllers
         [HttpGet("{id:int}")]
         public IActionResult ObterPorId(int id)
         {
-            var task = _context.Tarefas.Find(id);
-            if (task == null)
+            var tarefa = _context.Tarefas.Find(id);
+            if (tarefa == null)
             {
                 return NotFound("Não foi encontrada tarefa com este id.");
             }
 
-            return Ok(task);
+            return Ok(tarefa);
         }
 
         [HttpGet("ObterTodos")]
         public IActionResult ObterTodos()
         {
             // TODO: Buscar todas as tarefas no banco utilizando o EF
-            var tasks = _context.Tarefas.ToList();
-            if (!tasks.Any())
+            var tarefas = _context.Tarefas.ToList();
+            if (!tarefas.Any())
             {
                 return NotFound("Não há tarefas cadastradas.");
             }
 
-            return Ok(tasks);
+            return Ok(tarefas);
         }
 
         [HttpGet("ObterPorTitulo")]
         public IActionResult ObterPorTitulo(string titulo)
         {
-            // TODO: Buscar  as tarefas no banco utilizando o EF, que contenha o titulo recebido por parâmetro
-            // Dica: Usar como exemplo o endpoint ObterPorData
             var tituloMinusculo = titulo.ToLower();
-            var tasks = _context.Tarefas.Where(task => task.Titulo.ToLower().Contains(tituloMinusculo));
-            if (!tasks.Any())
+            var tarefas = _context.Tarefas.Where(tarefa => tarefa.Titulo.ToLower().Contains(tituloMinusculo));
+            if (!tarefas.Any())
             {
                 return NotFound("Não há tarefas cadastradas com esse título.");
             }
 
-            return Ok(tasks);
+            return Ok(tarefas);
         }
 
         [HttpGet("ObterPorData")]
